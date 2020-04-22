@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>FB Scan - 0566662225</title>
+  <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+  <main>
+    <div class="move-action"></div>
+    <div class="main-box">
+      <div class="action-bar">
+        <div class="minimize" id="minimize"></div>
+        <div class="close" id="close"></div>
+      </div>
+      <aside class="left-box">
+        <div class="logo">
+          FACEBOOK SCAN
+        </div>
+        <div onclick="selectMenu(event,0)" class="row item active">
+          Scan Mail
+        </div>
+        <div onclick="selectMenu(event,1)" class="row item ">
+          Result
+        </div>
+      </aside>
+      <section class="right-box " id="box-scan">
+        <div class="row align-items-center justify-content-between">
+          <label>Fake IP</label>
+          <div id="fake-ip">
+            <span>Default</span>
+            <div class="icon-down"></div>
+            <ul class="drop-down-list">
+              <li onclick="changeStatusSpanText(0)">Default</li>
+              <li onclick="changeStatusSpanText(1)">Dcom</li>
+            </ul>
+          </div>
+          <button class="start" id="start" onclick="clickStartOrStop()">Start</button>
+        </div>
+        <div class="row ">
+          <ul class="list-scaned ">
+            <li class="header">
+              <ul class="d-felx align-items-center">
+                <li class="col-custom-10"></li>
+                <li class="col-custom-70">Email</li>
+                <li class="col-custom-20">Status</li>
+              </ul>
+            </li>
+            <li class="scaned-item">
+              <ul class="d-felx align-items-center" style="display:none;">
+                <li class="col-custom-10">1</li>
+                <li class="col-custom-70">
+                  luca
+                </li>
+                <li class="col-custom-20 success">Success</li>
+              </ul>
+
+            </li>
+          </ul>
+        </div>
+      </section>
+      <section class="right-box disable" id="box-result">
+        <div class="row scan-info">
+          <div class="item item-style-1 bg-item col-custom-33">
+            <div class="total">
+              <div class="title">
+                Total
+              </div>
+              <div class="count" id="count-total">
+                0
+              </div>
+            </div>
+          </div>
+          <div class="item item-style-1 bg-item col-custom-33">
+            <div class="success">
+              <div class="title">
+                Success
+              </div>
+              <div class="count" id="count-success">
+                0
+              </div>
+            </div>
+          </div>
+          <div class="item item-style-1 bg-item col-custom-33">
+            <div class="failed">
+              <div class="title">
+                Failed
+              </div>
+              <div class="count" id="count-failed">
+                0
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <ul class="list-scaned col-custom-50" style="margin-right: 5px;">
+            <li class="header">
+              <ul class="d-felx align-items-center">
+                <li class="col-custom-20"></li>
+                <li class="col-custom-50">Email</li>
+                <li class="col-custom-30">Status</li>
+              </ul>
+            </li>
+            <li class="scaned-item">
+              
+             
+            </li>
+
+          </ul>
+          <ul class="list-scaned col-custom-50" style="margin-left: 5px;">
+            <li class="header">
+              <ul class="d-felx align-items-center">
+                <li class="col-custom-20"></li>
+                <li class="col-custom-50">Email</li>
+                <li class="col-custom-30">Status</li>
+              </ul>
+            </li>
+            <li class="scaned-item">
+             
+            </li>
+
+          </ul>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script src="./render.js"></script>
+  <script>
+    // require('./render.js');
+  </script>
+</body>
+
+</html>

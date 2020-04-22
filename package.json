@@ -1,0 +1,25 @@
+{
+  "name": "fb-scan-electronjs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codeformylife/FB-Scan-ElectronJS.git"
+  },
+  "author": "Luca",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/codeformylife/FB-Scan-ElectronJS/issues"
+  },
+  "homepage": "https://github.com/codeformylife/FB-Scan-ElectronJS#readme",
+  "dependencies": {
+    "child_process": "^1.0.2",
+    "electron": "^8.2.3",
+    "request-promise": "^4.2.5"
+  }
+}

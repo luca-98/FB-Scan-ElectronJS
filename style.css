@@ -1,0 +1,338 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+main {
+  width: 950px;
+  height: 600px;
+  background-color: #7f5a83;
+  background-image: linear-gradient(325deg, #7f5a83 3%, #0d324d 88%);
+  overflow: hidden;
+  border-radius: 25px;
+  box-shadow: 0 0 8px #141e30;
+  padding-top: 0;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+}
+ul,
+li {
+  list-style: none;
+}
+.header ul li,
+.scaned-item ul li {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-left: 5px;
+}
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background-color: #0d324d49;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #987a9b;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #6d4970;
+}
+.move-action {
+  height: 20px;
+  width: 100%;
+  cursor: move;
+  -webkit-app-region: drag;
+}
+.main-box {
+  position: relative;
+  width: 100%;
+  height: calc(100% - 20px);
+  display: flex;
+  padding: 0px 20px 20px 20px;
+}
+.main-box:before {
+  height: 20px;
+  content: "Copyright by Luca - 0566662225";
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+}
+.action-bar {
+  position: absolute;
+  top: 0;
+  right: 20px;
+  display: flex;
+  z-index: 9999;
+}
+.close {
+  width: 20px;
+  height: 20px;
+  background-color: rgb(253, 61, 61);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.5s all;
+}
+.close:before,
+.close:after {
+  position: absolute;
+  content: " ";
+  height: 10px;
+  width: 2px;
+  background-color: white;
+}
+.close:before {
+  transform: rotate(45deg);
+}
+.close:after {
+  transform: rotate(-45deg);
+}
+.minimize {
+  width: 20px;
+  height: 20px;
+  background-color: rgb(253, 196, 39);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.5s all;
+  margin-right: 5px;
+}
+.minimize:before {
+  position: absolute;
+  content: " ";
+  height: 10px;
+  width: 2px;
+  background-color: white;
+  transform: rotate(90deg);
+}
+.row {
+  width: 100%;
+  display: flex;
+  margin-bottom: 10px;
+}
+.col-custom-10 {
+  width: 10%;
+}
+.col-custom-20 {
+  width: 20%;
+}
+.col-custom-30 {
+  width: 30%;
+}
+.col-custom-33 {
+  width: 33%;
+}
+.col-custom-50 {
+  width: 50% !important;
+}
+.col-custom-60 {
+  width: 60%;
+}
+.col-custom-70 {
+  width: 70%;
+}
+.d-felx {
+  display: flex;
+}
+.align-items-center {
+  align-items: center;
+}
+.justify-content-between {
+  justify-content: space-between;
+}
+.left-box {
+  padding-right: 20px;
+  position: relative;
+  width: 250px;
+  overflow: hidden;
+  border-right: 0.5px solid rgba(255, 255, 255, 0.521);
+}
+.left-box .logo {
+  font-weight: bold;
+  font-size: 26px;
+  margin-bottom: 20px;
+}
+.left-box .item {
+  font-size: 20px;
+  padding: 10px;
+  width: 100%;
+  transition: 0.3s ease-in-out;
+  cursor: pointer;
+}
+.left-box .item:hover {
+  border-left: 4px solid tomato;
+  background-color: rgba(255, 255, 255, 0.164);
+}
+.left-box .item.active {
+  border-left: 4px solid tomato;
+  background-color: rgba(255, 255, 255, 0.164);
+}
+
+.right-box {
+  margin-left: 20px;
+  margin-top: 30px;
+  width: calc(100% - 270px);
+  height: calc(100% - 60px);
+  position: relative;
+  overflow: hidden;
+  transition: 0.5s all;
+}
+.right-box .item {
+  padding: 10px;
+  margin-right: 5px;
+}
+.right-box .item:last-child {
+  margin-right: 0;
+}
+.right-box .item-style-1 {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  padding: 15px;
+}
+.right-box .scan-info .total,
+.right-box .scan-info .success,
+.right-box .scan-info .failed {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 20px;
+}
+.success {
+  color: aquamarine;
+}
+.failed {
+  color: tomato;
+}
+.list-scaned {
+  border-radius: 10px;
+  width: 100%;
+  height: 435px;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.list-scaned .header {
+  padding: 10px 0;
+}
+.scaned-item {
+  height: 395px;
+  max-height: 395px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.scaned-item ul {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-bottom: 4px;
+
+}
+.scaned-item ul .col-custom-10 {
+  padding-left: 10px;
+}
+
+
+.icon-down {
+  margin-top: -3px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
+
+#fake-ip {
+  margin-left: 10px;
+  min-width: 60%;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: white;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+#fake-ip .drop-down-list {
+  opacity: 0;
+  height: 0;
+  display: none;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  background-color: rgb(41, 40, 40);
+  width: 100%;
+  transform: translateY(100%);
+  z-index: 99999;
+  transition: 0.5s all;
+}
+#fake-ip .drop-down-list li {
+  cursor: pointer;
+  padding: 5px 10px;
+  margin-bottom: 10px;
+}
+#fake-ip .drop-down-list li:first-child {
+  margin-top: 10px;
+}
+#fake-ip .drop-down-list li:hover {
+  background-color: rgba(255, 255, 255, 0.281);
+}
+#fake-ip:hover .drop-down-list {
+  height: auto;
+  opacity: 1;
+  display: block;
+}
+.right-box .start,
+.right-box .running {
+  border: none;
+  background-color: turquoise;
+  color: white;
+  min-width: 150px;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  outline: none;
+}
+.running {
+  animation: blink 2s infinite;
+}
+@keyframes blink {
+  0% {
+    background-color: tomato;
+  }
+  50% {
+    background-color: rgb(180, 34, 8);
+  }
+  100% {
+    background-color: tomato;
+  }
+}
+
+#box-scan .list-scaned {
+  height: 450px;
+}
+#box-scan .scaned-item {
+  height: 410px;
+  max-height: 410px;
+}
+.disable {
+  opacity: 0;
+  display: none;
+}
