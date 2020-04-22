@@ -91,27 +91,12 @@ function changeStatusSpanText(index) {
         spanText.innerHTML = 'Dcom';
     }
 }
-
-function addScaned(index, email, status) {
+let scanedIndex = 0;
+function addScaned(email, status) {
+    scanedIndex++;
     let ul = document.createElement('ul');
     ul.innerHTML = ' <li class="col-custom-10">1</li><li class="col-custom-70">luca</li><li class="col-custom-20 success">Success</li>';
-    ul.children[0].innerHTML = index;
-    ul.children[1].innerHTML = email;
-    ul.children[2].classList = {};
-    if (status) {
-        ul.children[2].innerHTML = 'Success';
-        ul.children[2].classList = 'success';
-    } else {
-        ul.children[2].innerHTML = 'Failed';
-        ul.children[2].classList = 'failed';
-    }
-    scan_scaned.appendChild(ul);
-}
-
-function addScaned(index, email, status) {
-    let ul = document.createElement('ul');
-    ul.innerHTML = ' <li class="col-custom-10">1</li><li class="col-custom-70">luca</li><li class="col-custom-20 success">Success</li>';
-    ul.children[0].innerHTML = index;
+    ul.children[0].innerHTML = scanedIndex;
     ul.children[1].innerHTML = email;
     ul.children[2].classList = {};
     if (status) {
@@ -219,16 +204,14 @@ const domain = [
     "@live.be"
 ]
 async function check() {
-    let index = 1;
     for (let i = 0; i < 4; i++) {
         if (status) {
             const username = await randomUserName();
             for (const iterator of domain) {
                 if (status) {
                     const result = await Worker.checkAccount(username + iterator);
-                    addScaned(index, username + iterator, result.info.success);
+                    addScaned(username + iterator, result.info.success);
                     addResult(username + iterator, result.info.success, true);
-                    index++;
                 }
             }
         }
