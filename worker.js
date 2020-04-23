@@ -41,11 +41,11 @@ async function getLoginPage(userAgent) {
     const option = {
         method: 'GET',
         url: 'https://m.facebook.com/login',
-        timeout: 2000,
         headers: {
             'Host': 'm.facebook.com',
             'User-Agent': userAgent
         },
+        timeout: 8000,
         resolveWithFullResponse: true
         // proxy
     }
@@ -74,7 +74,7 @@ async function getLoginPage(userAgent) {
                 result['cookie'] = buildCookie(response.headers['set-cookie']);
             }
         }).catch(e => {
-            result = e.message;
+            result = e.name;
         });
 
     return result;
@@ -101,22 +101,25 @@ async function postLogin(resultGetLoginPage, userAgent, email) {
     }
     await request(option)
         .catch(async function (error) {
-            const resLocation = error.response.headers.location;
-            let start = resLocation.indexOf('&e=') + 3;
-            let end = resLocation.indexOf('&', start);
-            let code = resLocation.slice(start, end);
-            if (code == '1348092') {
-                result = { success: true, code: '302 : Found' };
-            } else if (code == '1348131') {
-                let newCookie = '';
-                if (error.response.headers['set-cookie']) {
-                    newCookie = buildCookie(error.response.headers['set-cookie']);
+            if (error.response) {
+                const resLocation = error.response.headers.location;
+                let start = resLocation.indexOf('&e=') + 3;
+                let end = resLocation.indexOf('&', start);
+                let code = resLocation.slice(start, end);
+                if (code == '1348092') {
+                    result = { success: true, code: '302 : Found' };
+                } else if (code == '1348131') {
+                    let newCookie = '';
+                    if (error.response.headers['set-cookie']) {
+                        newCookie = buildCookie(error.response.headers['set-cookie']);
+                    }
+                    result = await getUrlResultLogin(resLocation, 'https://m.facebook.com/login', userAgent, newCookie, email);
                 }
-                result = await getUrlResultLogin(resLocation, 'https://m.facebook.com/login', userAgent, newCookie, email);
+                else {
+                    result = { success: false, code: 'Other :' + code };
+                }
             }
-            else {
-                result = { success: false, code: 'Other :' + code };
-            }
+
         })
     return result;
 }
@@ -214,12 +217,14 @@ async function postSearch(url, refUrl, userAgent, cookie, email, formData) {
         .then(response => {
         })
         .catch(async function (error) {
-            const resLocation = error.response.headers.location;
-            let newCookie = '';
-            if (error.response.headers['set-cookie']) {
-                newCookie = buildCookie(error.response.headers['set-cookie']);
+            if (error.response) {
+                const resLocation = error.response.headers.location;
+                let newCookie = '';
+                if (error.response.headers['set-cookie']) {
+                    newCookie = buildCookie(error.response.headers['set-cookie']);
+                }
+                result = await getSearchResult(resLocation, refUrl, userAgent, newCookie, email);
             }
-            result = await getSearchResult(resLocation, refUrl, userAgent, newCookie, email);
         })
     return result;
 }
@@ -260,10 +265,11 @@ const checkAccount = async (email, proxy) => {
             request = request.defaults({
                 proxy: 'http://' + proxy.host + ':' + proxy.port
             })
+            // console.log('checking '+email+ ' - '+ proxy.host + ':' + proxy.port);
         }
         const userAgent = UserAgent.getRandomUserAgentMobile();
         const resultGetLoginPage = await getLoginPage(userAgent);
-        if (resultGetLoginPage.url) {
+        if (typeof resultGetLoginPage !== 'string') {
             const resulrPostLogin = await postLogin(resultGetLoginPage, userAgent, email);
             return { email, info: resulrPostLogin };
         } else {
@@ -271,7 +277,6 @@ const checkAccount = async (email, proxy) => {
         }
     }
 }
-// checkAccount('vu.tienanh.1209');
 
 exports.checkAccount = checkAccount;
 

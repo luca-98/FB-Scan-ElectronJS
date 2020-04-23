@@ -38,6 +38,9 @@ document.getElementById('selected-default').addEventListener('click', () => {
 document.getElementById('selected-dcom').addEventListener('click', () => {
     changeStatusSpanText(1);
 })
+document.getElementById('selected-proxy').addEventListener('click', () => {
+    changeStatusSpanText(2);
+})
 document.getElementById('menu-scan').addEventListener('click', ($event) => {
     selectMenu($event, 0)
 })
@@ -88,26 +91,37 @@ function changeStatusSpanText(index) {
     if (index != 'undefined') indexFakeIp = index;
     if (indexFakeIp == 0) {
         spanText.innerHTML = 'Default';
-    } else {
+    } else if (indexFakeIp == 1) {
         spanText.innerHTML = 'Dcom';
+    }
+    else if (indexFakeIp == 2) {
+        spanText.innerHTML = 'Proxy';
     }
 }
 let scanedIndex = 0;
-function addScaned(email, status) {
+function addScaned(email, info, status) {
     scanedIndex++;
     let ul = document.createElement('ul');
-    ul.innerHTML = ' <li class="col-custom-10">1</li><li class="col-custom-70">luca</li><li class="col-custom-20 success">Success</li>';
+    ul.innerHTML = ' <li class="col-custom-10">1</li><li class="col-custom-50">luca</li><li class="col-custom-20 ">info</li><li class="col-custom-20 success">Success</li>';
     ul.children[0].innerHTML = scanedIndex;
     ul.children[1].innerHTML = email;
-    ul.children[2].classList = {};
+    ul.children[2].innerHTML = info.code ? info.code : info;
+    ul.children[3].classList = {};
     if (status) {
-        ul.children[2].innerHTML = 'Success';
-        ul.children[2].classList = 'success';
+        ul.children[3].innerHTML = 'Success';
+        ul.children[3].classList = 'success';
     } else {
-        ul.children[2].innerHTML = 'Failed';
-        ul.children[2].classList = 'failed';
+        ul.children[3].innerHTML = 'Failed';
+        ul.children[3].classList = 'failed';
     }
     scan_scaned.appendChild(ul);
+    scan_scaned.scrollTop = scan_scaned.scrollHeight;
+    if (scan_scaned.childNodes.length > 150) {
+        const max = scan_scaned.childNodes.length;
+        for (let i = max; i >= 150; i--) {
+            scan_scaned.removeChild(scan_scaned.firstElementChild);
+        }
+    }
 }
 
 function addResult(email, status, isWrite) {
@@ -124,6 +138,7 @@ function addResult(email, status, isWrite) {
         ul.children[2].innerHTML = 'Success';
         ul.children[2].classList = 'success';
         result_scaned[0].appendChild(ul);
+        result_scaned[0].scrollTop = result_scaned[0].scrollHeight;
         if (result_scaned[0].childNodes.length > 150) {
             const max = result_scaned[0].childNodes.length;
             for (let i = max; i >= 150; i--) {
@@ -150,6 +165,7 @@ function addResult(email, status, isWrite) {
         ul.children[2].innerHTML = 'Failed';
         ul.children[2].classList = 'failed';
         result_scaned[1].appendChild(ul);
+        result_scaned[1].scrollTop = result_scaned[1].scrollHeight;
         if (result_scaned[1].childNodes.length > 150) {
             const max = result_scaned[1].childNodes.length;
             for (let i = max; i >= 150; i--) {
@@ -170,6 +186,7 @@ function addResult(email, status, isWrite) {
             }
         }
     }
+
 
 }
 
@@ -219,22 +236,42 @@ const domain = [
     "@hotmail.co.uk",
     "live.es"
 ]
+let proxyIndex = 0;
+let listProxy = [];
+let isDoneCheck = false;
 async function check() {
-    for (let i = 0; i < 2; i++) {
-        if (status) {
+    if (status) {
+        for (let i = 0; i < 3; i++) {
             const username = await randomUserName();
+            let proxy = null;
+            if (listProxy.length !== 0) {
+                if (proxyIndex <= listProxy.length) {
+                    proxyIndex++;
+                } else {
+                    proxyIndex = 0;
+                    isDoneCheck = true;
+                }
+                proxy = listProxy[proxyIndex];
+            }
+            let isAdd = false;
             for (const iterator of domain) {
                 if (status) {
-                    const result = await Worker.checkAccount(username + iterator);
-                    addScaned(username + iterator, result.info.success);
-                    addResult(username + iterator, result.info.success, true);
-
+                    try {
+                        const result = await Worker.checkAccount(username + iterator, proxy);
+                        if (typeof result.info !== 'string' && !isAdd && !isDoneCheck) {
+                            isAdd = true;
+                            fs.appendFile('proxyok.txt', proxy.host + ':' + proxy.port + '\n', function (err, result) {
+                            });
+                        }
+                        addScaned(username + iterator, result.info, result.info.success);
+                        addResult(username + iterator, result.info.success, true);
+                    }
+                    catch (e) {
+                    }
                 }
             }
         }
     }
-
-    await check();
 }
 
 
@@ -243,29 +280,26 @@ async function run() {
         if (indexFakeIp == 1) {
             await FakeIp.fakeIpViettel().then(async res => {
                 if (res) {
-                    check();
-                    check();
-                    check();
-                    check();
-                    check();
-                    check();
-                    check();
-                    check();
-                    check();
-                    check();
+                    for (let i = 0; i < 10; i++) {
+                        check();
+                    }
                 }
             });
+        } else if (indexFakeIp == 2) {
+            listProxy = [];
+            const data = fs.readFileSync('proxy.txt', 'UTF-8');
+            const lines = data.split(/\r?\n/);
+            lines.forEach((line) => {
+                const temp = line.split(':');
+                listProxy.push({ host: temp[0], port: temp[1] });
+            });
+            for (let i = 0; i < 100; i++) {
+                check();
+            }
         } else {
-            check();
-            check();
-            check();
-            check();
-            check();
-            check();
-            check();
-            check();
-            check();
-            check();
+            for (let i = 0; i < 100; i++) {
+                check();
+            }
         }
     }
 
@@ -277,25 +311,16 @@ function clickStartOrStop() {
     run();
 
 }
-
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 setInterval(async () => {
     if (status) {
-        if (indexFakeIp == 1) {
-            scan_scaned.innerHTML = '';
-            status = false;
-            await FakeIp.fakeIpViettel().then(async res => {
-                status = true;
-                check();
-                check();
-                check();
-                check();
-                check();
-                check();
-                check();
-                check();
-                check();
-                check();
-            });
-        }
+        status = false;
+        scan_scaned.innerHTML = '';
+        changeStatusButton();
+        await sleep(10000);
+        clickStartOrStop();
+        console.log('reRUn');
     }
 }, 200000);
