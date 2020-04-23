@@ -58,6 +58,7 @@ function onInit() {
                 addResult(line, false, false);
             }
         });
+
     }
     if (fs.existsSync('success.txt')) {
         const data2 = fs.readFileSync('success.txt', 'UTF-8');
@@ -123,6 +124,12 @@ function addResult(email, status, isWrite) {
         ul.children[2].innerHTML = 'Success';
         ul.children[2].classList = 'success';
         result_scaned[0].appendChild(ul);
+        if (result_scaned[0].childNodes.length > 150) {
+            const max = result_scaned[0].childNodes.length;
+            for (let i = max; i >= 150; i--) {
+                result_scaned[0].removeChild(result_scaned[0].firstElementChild);
+            }
+        }
         if (isWrite) {
             try {
                 if (!fs.existsSync('success.txt')) {
@@ -143,6 +150,12 @@ function addResult(email, status, isWrite) {
         ul.children[2].innerHTML = 'Failed';
         ul.children[2].classList = 'failed';
         result_scaned[1].appendChild(ul);
+        if (result_scaned[1].childNodes.length > 150) {
+            const max = result_scaned[1].childNodes.length;
+            for (let i = max; i >= 150; i--) {
+                result_scaned[1].removeChild(result_scaned[1].firstElementChild);
+            }
+        }
         if (isWrite) {
             try {
                 if (!fs.existsSync('failed.txt')) {
@@ -166,8 +179,7 @@ function selectMenu(event, index) {
         iterator.classList.remove('active');
     }
     event.target.classList.add('active');
-    console.log(boxResult)
-    console.log(boxScan)
+
 
     if (index == 0) {
         menuResult.classList.remove('active');
@@ -201,10 +213,14 @@ async function randomUserName() {
 
 const domain = [
     "@hotmail.fr",
-    "@live.be"
+    "@live.be",
+    "@live.co.uk",
+    "@live.it",
+    "@hotmail.co.uk",
+    "live.es"
 ]
 async function check() {
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 2; i++) {
         if (status) {
             const username = await randomUserName();
             for (const iterator of domain) {
@@ -212,10 +228,13 @@ async function check() {
                     const result = await Worker.checkAccount(username + iterator);
                     addScaned(username + iterator, result.info.success);
                     addResult(username + iterator, result.info.success, true);
+
                 }
             }
         }
     }
+
+    await check();
 }
 
 
@@ -224,11 +243,29 @@ async function run() {
         if (indexFakeIp == 1) {
             await FakeIp.fakeIpViettel().then(async res => {
                 if (res) {
-                    await check();
+                    check();
+                    check();
+                    check();
+                    check();
+                    check();
+                    check();
+                    check();
+                    check();
+                    check();
+                    check();
                 }
             });
         } else {
-            await check();
+            check();
+            check();
+            check();
+            check();
+            check();
+            check();
+            check();
+            check();
+            check();
+            check();
         }
     }
 
@@ -238,8 +275,27 @@ function clickStartOrStop() {
     status = !status;
     changeStatusButton();
     run();
+
 }
 
-setInterval(() => {
-    run();
-}, 10000);
+setInterval(async () => {
+    if (status) {
+        if (indexFakeIp == 1) {
+            scan_scaned.innerHTML = '';
+            status = false;
+            await FakeIp.fakeIpViettel().then(async res => {
+                status = true;
+                check();
+                check();
+                check();
+                check();
+                check();
+                check();
+                check();
+                check();
+                check();
+                check();
+            });
+        }
+    }
+}, 200000);
