@@ -8,11 +8,9 @@ var request = require('request-promise');
 function writeSource(pageSource, email) {
     if (!email) {
         fs.writeFile('result.html', pageSource, function (err, result) {
-            if (err) console.log('error', err);
         });
     } else {
         fs.writeFile(process.cwd() + '\\temp\\' + email + '.html', pageSource, function (err, result) {
-            if (err) console.log('error', err);
         });
     }
 }
@@ -265,7 +263,6 @@ const checkAccount = async (email, proxy) => {
             request = request.defaults({
                 proxy: 'http://' + proxy.host + ':' + proxy.port
             })
-            // console.log('checking '+email+ ' - '+ proxy.host + ':' + proxy.port);
         }
         const userAgent = UserAgent.getRandomUserAgentMobile();
         const resultGetLoginPage = await getLoginPage(userAgent);

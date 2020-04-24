@@ -22,10 +22,21 @@ const fs = require('fs');
 let total = 0;
 let success = 0;
 let failed = 0;
-let indexMenu = 0;
 let status = false;
 let indexFakeIp = 0;
-
+let scanedIndex = 0;
+let proxyIndex = 0;
+let listProxy = [];
+let listProxyOK = [];
+const domain = [
+    "@hotmail.fr",
+    "@live.be",
+    "@live.co.uk",
+    "@live.it",
+    "@hotmail.co.uk",
+    "live.es"
+]
+let isRunning = false;
 document.getElementById('close').addEventListener('click', () => {
     remote.app.quit();
 })
@@ -53,9 +64,19 @@ start.addEventListener('click', () => {
 
 function onInit() {
     changeStatusButton();
+    loadResult();
+    loadProxy();
+}
+onInit();
+
+function loadResult() {
     if (fs.existsSync('failed.txt')) {
         const data = fs.readFileSync('failed.txt', 'UTF-8');
         const lines = data.split(/\r?\n/);
+        failed = lines.length;
+        if (lines.length > 150) {
+            lines.splice(0, lines.length - 150);
+        }
         lines.forEach((line) => {
             if (line != '') {
                 addResult(line, false, false);
@@ -64,17 +85,33 @@ function onInit() {
 
     }
     if (fs.existsSync('success.txt')) {
-        const data2 = fs.readFileSync('success.txt', 'UTF-8');
-        const lines2 = data2.split(/\r?\n/);
-        lines2.forEach((line) => {
+        const data = fs.readFileSync('success.txt', 'UTF-8');
+        const lines = data.split(/\r?\n/);
+        success = lines.length;
+        if (lines.length > 150) {
+            lines.splice(0, lines.length - 150);
+        }
+        lines.forEach((line) => {
             if (line != '') {
                 addResult(line, true, false);
             }
         });
     }
-
+    total = success + failed;
 }
-onInit();
+
+function loadProxy() {
+    if (fs.existsSync('proxy.txt')) {
+        listProxy = [];
+        const data = fs.readFileSync('proxy.txt', 'UTF-8');
+        const lines = data.split(/\r?\n/);
+        lines.forEach((line) => {
+            const temp = line.split(':');
+            listProxy.push({ host: temp[0], port: temp[1] });
+        });
+        document.getElementById('selected-proxy').innerHTML = 'Proxy (' + listProxy.length + ')';
+    }
+}
 
 function changeStatusButton() {
     start.classList = {};
@@ -95,11 +132,11 @@ function changeStatusSpanText(index) {
         spanText.innerHTML = 'Dcom';
     }
     else if (indexFakeIp == 2) {
-        spanText.innerHTML = 'Proxy';
+        spanText.innerHTML = 'Proxy (' + listProxy.length + ')';
     }
 }
-let scanedIndex = 0;
 function addScaned(email, info, status) {
+    isRunning = true;
     scanedIndex++;
     let ul = document.createElement('ul');
     ul.innerHTML = ' <li class="col-custom-10">1</li><li class="col-custom-50">luca</li><li class="col-custom-20 ">info</li><li class="col-custom-20 success">Success</li>';
@@ -152,7 +189,6 @@ function addResult(email, status, isWrite) {
                     createStream.end();
                 }
                 fs.appendFile('success.txt', email + '\n', function (err, result) {
-                    if (err) console.log('error', err);
                 });
             } catch (err) {
                 console.error(err)
@@ -179,7 +215,6 @@ function addResult(email, status, isWrite) {
                     createStream.end();
                 }
                 fs.appendFile('failed.txt', email + '\n', function (err, result) {
-                    if (err) console.log('error', err);
                 });
             } catch (err) {
                 console.error(err)
@@ -196,8 +231,6 @@ function selectMenu(event, index) {
         iterator.classList.remove('active');
     }
     event.target.classList.add('active');
-
-
     if (index == 0) {
         menuResult.classList.remove('active');
         menuScan.classList.add('active');
@@ -212,7 +245,6 @@ function selectMenu(event, index) {
         boxScan.classList.add('disable');
         boxResult.classList.remove('disable');
     }
-    indexMenu = index;
 }
 
 async function randomUserName() {
@@ -228,48 +260,48 @@ async function randomUserName() {
     return $('div#copy3').text();
 };
 
-const domain = [
-    "@hotmail.fr",
-    "@live.be",
-    "@live.co.uk",
-    "@live.it",
-    "@hotmail.co.uk",
-    "live.es"
-]
-let proxyIndex = 0;
-let listProxy = [];
-let isDoneCheck = false;
+async function checkmail(mail) {
+    if (status) {
+        let proxy = null;
+        if (listProxy.length !== 0) {
+            if (proxyIndex <= listProxy.length) {
+                proxyIndex++;
+            } else {
+                proxyIndex = 0;
+                // listProxy = [...listProxyOK];
+            }
+            proxy = listProxy[proxyIndex];
+        }
+        let isAdd = false;
+        try {
+            const result = await Worker.checkAccount(mail, proxy);
+            if (typeof result.info !== 'string' && !isAdd) {
+                if (!listProxyOK.includes(proxy)) {
+                    listProxyOK.push(proxy);
+                    isAdd = true;
+                    fs.appendFile('proxyok.txt', proxy.host + ':' + proxy.port + '\n', function (err, result) {
+                    });
+                }
+                addResult(mail, result.info.success, true);
+            }
+            if (status)
+                addScaned(mail, result.info, result.info.success);
+        }
+        catch (e) {
+        }
+    }
+}
+
+
 async function check() {
     if (status) {
-        for (let i = 0; i < 3; i++) {
+        try {
             const username = await randomUserName();
-            let proxy = null;
-            if (listProxy.length !== 0) {
-                if (proxyIndex <= listProxy.length) {
-                    proxyIndex++;
-                } else {
-                    proxyIndex = 0;
-                    isDoneCheck = true;
-                }
-                proxy = listProxy[proxyIndex];
-            }
-            let isAdd = false;
             for (const iterator of domain) {
-                if (status) {
-                    try {
-                        const result = await Worker.checkAccount(username + iterator, proxy);
-                        if (typeof result.info !== 'string' && !isAdd && !isDoneCheck) {
-                            isAdd = true;
-                            fs.appendFile('proxyok.txt', proxy.host + ':' + proxy.port + '\n', function (err, result) {
-                            });
-                        }
-                        addScaned(username + iterator, result.info, result.info.success);
-                        addResult(username + iterator, result.info.success, true);
-                    }
-                    catch (e) {
-                    }
-                }
+                checkmail(username + iterator);
             }
+        }
+        catch (e) {
         }
     }
 }
@@ -278,26 +310,15 @@ async function check() {
 async function run() {
     if (status) {
         if (indexFakeIp == 1) {
-            await FakeIp.fakeIpViettel().then(async res => {
-                if (res) {
-                    for (let i = 0; i < 10; i++) {
-                        check();
-                    }
-                }
-            });
+            for (let i = 0; i < 5; i++) {
+                check();
+            }
         } else if (indexFakeIp == 2) {
-            listProxy = [];
-            const data = fs.readFileSync('proxy.txt', 'UTF-8');
-            const lines = data.split(/\r?\n/);
-            lines.forEach((line) => {
-                const temp = line.split(':');
-                listProxy.push({ host: temp[0], port: temp[1] });
-            });
-            for (let i = 0; i < 100; i++) {
+            for (let i = 0; i < 50; i++) {
                 check();
             }
         } else {
-            for (let i = 0; i < 100; i++) {
+            for (let i = 0; i < 5; i++) {
                 check();
             }
         }
@@ -314,13 +335,30 @@ function clickStartOrStop() {
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
+
 setInterval(async () => {
-    if (status) {
-        status = false;
-        scan_scaned.innerHTML = '';
-        changeStatusButton();
-        await sleep(10000);
-        clickStartOrStop();
-        console.log('reRUn');
+
+    if (isRunning && indexFakeIp != 1) {
+        isRunning = false;
+        await sleep(8000);
+        if (!isRunning) {
+            status = true;
+            scan_scaned.innerHTML = '';
+            run();
+            console.log('reRUn');
+        }
+    } else if (isRunning && indexFakeIp == 1) {
+        isRunning = false;
+        await sleep(8000);
+        if (!isRunning) {
+            await FakeIp.fakeIpViettel().then(async res => {
+                if (res) {
+                    status = true;
+                    scan_scaned.innerHTML = '';
+                    run();
+                    console.log('reRUn');
+                }
+            });
+        }
     }
-}, 200000);
+}, 20000)
