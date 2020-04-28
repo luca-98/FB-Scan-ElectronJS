@@ -125,7 +125,7 @@ async function postLogin(request, resultGetLoginPage, userAgent, email) {
             })
         return result;
     }
-}
+
 
 async function getUrlResultLogin(request, url, refUrl, userAgent, cookie, email) {
         let result = { success: false, code: '200: getUrlResultLogin' };
@@ -154,7 +154,7 @@ async function getUrlResultLogin(request, url, refUrl, userAgent, cookie, email)
             });
         return result;
     }
-}
+
 
 async function getForgetPasswordLink(request, url, refUrl, userAgent, cookie, email) {
     let result = { success: false, code: '200: getForgetPasswordLink' };
@@ -230,7 +230,7 @@ async function postSearch(request, url, refUrl, userAgent, cookie, email, formDa
         })
     return result;
 }
-}
+
 
 async function getSearchResult(request, url, refUrl, userAgent, cookie, email) {
     let result = { success: false, code: '302 : getSearchResult' };
