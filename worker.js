@@ -75,7 +75,7 @@ async function getLoginPage(request, userAgent) {
                     result['cookie'] = buildCookie(response.headers['set-cookie']);
                 }
             }).catch(e => {
-                result = 'getLoginPage ' + e.name;
+                result = e.name;
             });
 
         return result;
@@ -86,74 +86,76 @@ async function getLoginPage(request, userAgent) {
 }
 
 async function postLogin(request, resultGetLoginPage, userAgent, email) {
-        let result = { success: false, code: '200 : postLogin' };
-        const option = {
-            method: 'POST',
-            url: resultGetLoginPage.url,
-            headers: {
-                'Host': 'm.facebook.com',
-                'User-Agent': userAgent,
-                Referer: 'https://m.facebook.com/login'
-            },
-            resolveWithFullResponse: true,
-            formData: resultGetLoginPage.formData
-            // proxy
-        };
-        option.formData['email'] = email;
-        option.formData['pass'] = email;
-        if (resultGetLoginPage.cookie) {
-            option.headers['Cookie'] = resultGetLoginPage.cookie;
-        }
-        await request(option)
-            .catch(async function (error) {
-                const resLocation = error.response.headers.location;
-                let start = resLocation.indexOf('&e=') + 3;
-                let end = resLocation.indexOf('&', start);
-                let code = resLocation.slice(start, end);
-                if (code == '1348092') {
-                    result = { success: true, code: '302 : Found' };
-                } else if (code == '1348131') {
-                    let newCookie = '';
-                    if (error.response.headers['set-cookie']) {
-                        newCookie = buildCookie(error.response.headers['set-cookie']);
-                    }
-                    result = await getUrlResultLogin(request, resLocation, 'https://m.facebook.com/login', userAgent, newCookie, email);
-                }
-                else {
-                    result = { success: false, code: 'Other :' + code };
-                }
-            })
-        return result;
+    let result = { success: false, code: '1:doesn\'t match' };
+    const option = {
+        method: 'POST',
+        url: resultGetLoginPage.url,
+        headers: {
+            'Host': 'm.facebook.com',
+            'User-Agent': userAgent,
+            Referer: 'https://m.facebook.com/login'
+        },
+        resolveWithFullResponse: true,
+        formData: resultGetLoginPage.formData
+        // proxy
+    };
+    option.formData['email'] = email;
+    option.formData['pass'] = email;
+    if (resultGetLoginPage.cookie) {
+        option.headers['Cookie'] = resultGetLoginPage.cookie;
     }
+    await request(option)
+        .then(res => {
+        })
+        .catch(async function (error) {
+            const resLocation = error.response.headers.location;
+            let start = resLocation.indexOf('&e=') + 3;
+            let end = resLocation.indexOf('&', start);
+            let code = resLocation.slice(start, end);
+            if (code == '1348092') {
+                result = { success: true, code: '302 : Found' };
+            } else if (code == '1348131') {
+                let newCookie = '';
+                if (error.response.headers['set-cookie']) {
+                    newCookie = buildCookie(error.response.headers['set-cookie']);
+                }
+                result = await getUrlResultLogin(request, resLocation, 'https://m.facebook.com/login', userAgent, newCookie, email);
+            }
+            else {
+                result = { success: false, code: 'Other :' + code };
+            }
+        })
+    return result;
+}
 
 
 async function getUrlResultLogin(request, url, refUrl, userAgent, cookie, email) {
-        let result = { success: false, code: '200: getUrlResultLogin' };
-        const option = {
-            method: 'GET',
-            url: url,
-            headers: {
-                'Host': 'm.facebook.com',
-                'User-Agent': userAgent,
-                Referer: refUrl
-            },
-            resolveWithFullResponse: true,
-        };
-        if (cookie !== '') {
-            option.headers['Cookie'] = cookie;
-        }
-        await request(option)
-            .then(async response => {
-                // writeSource(response.body, email);
-                const forgetPasswordLink = 'https://m.facebook.com/login/identify';
-                let newCookie = '';
-                if (response.headers['set-cookie']) {
-                    newCookie = buildCookie(response.headers['set-cookie']);
-                }
-                result = await getForgetPasswordLink(request, forgetPasswordLink, url, userAgent, newCookie, email);
-            });
-        return result;
+    let result = { success: false, code: '200: getUrlResultLogin' };
+    const option = {
+        method: 'GET',
+        url: url,
+        headers: {
+            'Host': 'm.facebook.com',
+            'User-Agent': userAgent,
+            Referer: refUrl
+        },
+        resolveWithFullResponse: true,
+    };
+    if (cookie !== '') {
+        option.headers['Cookie'] = cookie;
     }
+    await request(option)
+        .then(async response => {
+            // writeSource(response.body, email);
+            const forgetPasswordLink = 'https://m.facebook.com/login/identify';
+            let newCookie = '';
+            if (response.headers['set-cookie']) {
+                newCookie = buildCookie(response.headers['set-cookie']);
+            }
+            result = await getForgetPasswordLink(request, forgetPasswordLink, url, userAgent, newCookie, email);
+        });
+    return result;
+}
 
 
 async function getForgetPasswordLink(request, url, refUrl, userAgent, cookie, email) {
@@ -200,7 +202,7 @@ async function getForgetPasswordLink(request, url, refUrl, userAgent, cookie, em
 }
 
 async function postSearch(request, url, refUrl, userAgent, cookie, email, formData) {
-    let result = { success: false, code: '200 : postSearch' };
+    let result = { success: false, code: '2:doesn\'t match' };
     const option = {
         method: 'POST',
         url: url,
@@ -218,15 +220,13 @@ async function postSearch(request, url, refUrl, userAgent, cookie, email, formDa
         option.headers['Cookie'] = cookie;
     }
     await request(option)
-        .then(response => {
-        })
         .catch(async function (error) {
             const resLocation = error.response.headers.location;
             let newCookie = '';
             if (error.response.headers['set-cookie']) {
                 newCookie = buildCookie(error.response.headers['set-cookie']);
             }
-            result = await getSearchResult(resLocation, refUrl, userAgent, newCookie, email);
+            result = await getSearchResult(request, resLocation, refUrl, userAgent, newCookie, email);
         })
     return result;
 }
@@ -315,7 +315,7 @@ async function microsoft(request, email) {
         let $ = cheerio.load(responseHTML);
         let check = ($('input#iSigninName').val() || '').includes('@');
 
-        return { success: check, code: 'microsoft check' };
+        return { success: check, code: 'microsoft ' + check };
     } catch (e) {
         return { success: false, code: e.name };
     }
@@ -324,13 +324,12 @@ async function microsoft(request, email) {
 
 const checkAccount = async (email, proxy) => {
     let request = baseRequest;
+    const resultMicrosoft = await microsoft(request, email);
     if (proxy) {
         request = request.defaults({
-            timeout: 3000,
             proxy: 'http://' + proxy.host + ':' + proxy.port
         })
     }
-    const resultMicrosoft = await microsoft(request, email);
     if (proxy && resultMicrosoft.code == 'microsoft check' && !listProxyOK.includes(proxy.host + ':' + proxy.port)) {
         if (!fs.existsSync('proxyok.txt')) {
             var createStream = fs.createWriteStream("proxyok.txt");

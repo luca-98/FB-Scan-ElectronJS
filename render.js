@@ -282,9 +282,9 @@ async function checkmail(email) {
             }
             if (status)
                 addScaned(email, result.info, result.info.success);
+
         }
         catch (e) {
-            console.log(e)
         }
     }
 }
@@ -299,10 +299,9 @@ async function check() {
             }
         }
         catch (e) {
-
         }
+        await check();
     }
-    await check();
 }
 
 
@@ -313,7 +312,7 @@ async function run() {
                 check();
             }
         } else if (indexFakeIp == 2) {
-            for (let i = 0; i < 20; i++) {
+            for (let i = 0; i < 10; i++) {
                 check();
             }
         } else {
@@ -322,7 +321,6 @@ async function run() {
             }
         }
     }
-
 }
 
 function clickStartOrStop() {
