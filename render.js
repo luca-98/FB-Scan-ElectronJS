@@ -259,33 +259,29 @@ async function randomUserName() {
     let $ = cheerio.load(responseHTML);
     return $('div#copy3').text();
 };
+function getProxy() {
+    if (proxyIndex > listProxy.length) {
+        proxyIndex = 0;
+    }
+    const result = listProxy[proxyIndex];
+    proxyIndex++;
+    return result;
+}
 
-async function checkmail(mail) {
+
+async function checkmail(email) {
     if (status) {
         let proxy = null;
-        if (listProxy.length !== 0) {
-            if (proxyIndex <= listProxy.length) {
-                proxyIndex++;
-            } else {
-                proxyIndex = 0;
-                // listProxy = [...listProxyOK];
-            }
-            proxy = listProxy[proxyIndex];
+        if (indexFakeIp == 2) {
+            proxy = getProxy();
         }
-        let isAdd = false;
         try {
-            const result = await Worker.checkAccount(mail, proxy);
-            if (typeof result.info !== 'string' && !isAdd) {
-                if (!listProxyOK.includes(proxy)) {
-                    listProxyOK.push(proxy);
-                    isAdd = true;
-                    fs.appendFile('proxyok.txt', proxy.host + ':' + proxy.port + '\n', function (err, result) {
-                    });
-                }
-                addResult(mail, result.info.success, true);
+            const result = await Worker.checkAccount(email, proxy);
+            if (result.info.code !== 'RequestError') {
+                addResult(email, result.info.success, true);
             }
             if (status)
-                addScaned(mail, result.info, result.info.success);
+                addScaned(email, result.info, result.info.success);
         }
         catch (e) {
         }
@@ -304,6 +300,7 @@ async function check() {
         catch (e) {
         }
     }
+    await check();
 }
 
 
@@ -314,7 +311,7 @@ async function run() {
                 check();
             }
         } else if (indexFakeIp == 2) {
-            for (let i = 0; i < 50; i++) {
+            for (let i = 0; i < 20; i++) {
                 check();
             }
         } else {
@@ -330,35 +327,37 @@ function clickStartOrStop() {
     status = !status;
     changeStatusButton();
     run();
-
-}
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-setInterval(async () => {
 
-    if (isRunning && indexFakeIp != 1) {
-        isRunning = false;
-        await sleep(8000);
-        if (!isRunning) {
-            status = true;
-            scan_scaned.innerHTML = '';
-            run();
-            console.log('reRUn');
-        }
-    } else if (isRunning && indexFakeIp == 1) {
-        isRunning = false;
-        await sleep(8000);
-        if (!isRunning) {
-            await FakeIp.fakeIpViettel().then(async res => {
-                if (res) {
-                    status = true;
-                    scan_scaned.innerHTML = '';
-                    run();
-                    console.log('reRUn');
-                }
-            });
-        }
-    }
-}, 20000)
+// function sleep(ms) {
+//     return new Promise(resolve => setTimeout(resolve, ms));
+// }
+
+// setInterval(async () => {
+
+//     if (isRunning && indexFakeIp != 1) {
+//         isRunning = false;
+//         await sleep(8000);
+//         if (!isRunning) {
+//             status = true;
+//             scan_scaned.innerHTML = '';
+//             run();
+//             console.log('reRUn');
+//         }
+//     } else if (isRunning && indexFakeIp == 1) {
+//         isRunning = false;
+//         await sleep(8000);
+//         if (!isRunning) {
+//             await FakeIp.fakeIpViettel().then(async res => {
+//                 if (res) {
+//                     status = true;
+//                     scan_scaned.innerHTML = '';
+//                     run();
+//                     console.log('reRUn');
+//                 }
+//             });
+//         }
+//     }
+// }, 20000)
+
