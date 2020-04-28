@@ -284,6 +284,7 @@ async function checkmail(email) {
                 addScaned(email, result.info, result.info.success);
         }
         catch (e) {
+            console.log(e)
         }
     }
 }
@@ -298,6 +299,7 @@ async function check() {
             }
         }
         catch (e) {
+
         }
     }
     await check();

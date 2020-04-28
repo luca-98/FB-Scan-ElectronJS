@@ -13,7 +13,7 @@ function createWindow() {
   win.setMenu(null);
   win.setResizable(false);
   win.loadFile('index.html');
-  // win.webContents.openDevTools()
+  win.webContents.openDevTools()
 }
 
 app.whenReady().then(createWindow)
