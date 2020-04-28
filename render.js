@@ -70,20 +70,20 @@ function onInit() {
 onInit();
 
 function loadResult() {
-    if (fs.existsSync('failed.txt')) {
-        const data = fs.readFileSync('failed.txt', 'UTF-8');
-        const lines = data.split(/\r?\n/);
-        failed = lines.length;
-        if (lines.length > 150) {
-            lines.splice(0, lines.length - 150);
-        }
-        lines.forEach((line) => {
-            if (line != '') {
-                addResult(line, false, false);
-            }
-        });
+    // if (fs.existsSync('failed.txt')) {
+    //     const data = fs.readFileSync('failed.txt', 'UTF-8');
+    //     const lines = data.split(/\r?\n/);
+    //     failed = lines.length;
+    //     if (lines.length > 150) {
+    //         lines.splice(0, lines.length - 150);
+    //     }
+    //     lines.forEach((line) => {
+    //         if (line != '') {
+    //             addResult(line, false, false);
+    //         }
+    //     });
 
-    }
+    // }
     if (fs.existsSync('success.txt')) {
         const data = fs.readFileSync('success.txt', 'UTF-8');
         const lines = data.split(/\r?\n/);
@@ -208,18 +208,18 @@ function addResult(email, status, isWrite) {
                 result_scaned[1].removeChild(result_scaned[1].firstElementChild);
             }
         }
-        if (isWrite) {
-            try {
-                if (!fs.existsSync('failed.txt')) {
-                    var createStream = fs.createWriteStream("failed.txt");
-                    createStream.end();
-                }
-                fs.appendFile('failed.txt', email + '\n', function (err, result) {
-                });
-            } catch (err) {
-                console.error(err)
-            }
-        }
+        // if (isWrite) {
+        //     try {
+        //         if (!fs.existsSync('failed.txt')) {
+        //             var createStream = fs.createWriteStream("failed.txt");
+        //             createStream.end();
+        //         }
+        //         fs.appendFile('failed.txt', email + '\n', function (err, result) {
+        //         });
+        //     } catch (err) {
+        //         console.error(err)
+        //     }
+        // }
     }
 
 
