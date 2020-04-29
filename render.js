@@ -290,9 +290,11 @@ async function checkmail(email) {
             }
             if (result.info.code && result.info.code !== 'RequestError') {
                 addResult(email, result.info.success, true);
-                await sheet.addRows(
-                    [{ name: result.info.nameUser ? result.info.nameUser : '', email: email, success: result.info.success, code: result.info.code }]
-                );
+                if (result.info.success) {
+                    await sheet.addRows(
+                        [{ name: result.info.nameUser ? result.info.nameUser : '', email: email, success: result.info.success, code: result.info.code }]
+                    );
+                }
             }
             if (status)
                 addScaned(email, result.info, result.info.success);
