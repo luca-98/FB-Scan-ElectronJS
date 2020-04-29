@@ -5,7 +5,7 @@ const baseRequest = require('request-promise');
 const cheerio = require('cheerio');
 const { JSDOM } = jsdom;
 let cookieObject = {};
-let listProxyOK = [];
+
 
 
 function writeSource(pageSource, email) {
@@ -324,21 +324,12 @@ async function microsoft(request, email) {
 
 const checkAccount = async (email, proxy) => {
     let request = baseRequest;
-    const resultMicrosoft = await microsoft(request, email);
     if (proxy) {
         request = request.defaults({
             proxy: 'http://' + proxy.host + ':' + proxy.port
         })
     }
-    if (proxy && resultMicrosoft.code == 'microsoft check' && !listProxyOK.includes(proxy.host + ':' + proxy.port)) {
-        if (!fs.existsSync('proxyok.txt')) {
-            var createStream = fs.createWriteStream("proxyok.txt");
-            createStream.end();
-        }
-        listProxyOK.push(proxy.host + ':' + proxy.port)
-        fs.appendFile('proxyok.txt', proxy.host + ':' + proxy.port + '\n', function (err, result) {
-        });
-    }
+    const resultMicrosoft = await microsoft(request, email);
     if (resultMicrosoft.success) {
         const userAgent = UserAgent.getRandomUserAgentMobile();
         const resultGetLoginPage = await getLoginPage(request, userAgent);
@@ -359,8 +350,8 @@ exports.checkAccount = checkAccount;
 
 
 
-process.on('uncaughtException', function (err) {
-    console.log("worker err...");
-});
+// process.on('uncaughtException', function (err) {
+//     console.log("worker err...");
+// });
 
 

@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "mindful-acre-271815",
+  "private_key_id": "65879b6025915abb062e8342853298bf2db926a3",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCkdDAGr5fOUOEd\n7c9umUzvy+U/FeSb5zyYteVTE6ToZ2KthNoskOXChJSTXN2Ci9TC5iaH10oSTBW6\n1BIWlo7L+Vz0fTHKJ+jG/Y+iBKXxQ3ABIFMbWOfISNeNjzNBbA9vO+zTMoHEanzH\ncNo0CzLrW7s816NJdi/OadKcI9UUvVLPqlHAtZYihfyaHPtb/NRh6oaP2pEoOogA\ndavYNSKpSGdE09H19HsAPvoRozwn34XyUTdpiyM9Gn0DSLAwKCKDKFYTHjeElyps\nBZNfwWlr7rNdX4eTvd0k1bh5Vz8r0kvf8YpVwaM4/APnxkD6azw6OabxFXyhaBko\nbj8QNFAlAgMBAAECggEABGNHoMLXBXc2lApzUJuG6C/QtwuWsbfMVk3yh3JS7qx+\nsoVRhbZ8AUhxgMxA6lz58uIaWkeBP3AhdRgRcq7W5bq9vMkJjT/eJk9y1KGhHjw5\nZQSyxikFTilU+8u7upDvVhcLbS5ZmtI1Vn28ixgjzKnO57Z5/qZiBVtHdkkMEP7z\njIH5tI0DiX4/+CreyQZCj24HXWV5SHkhLxTL/thKlXt+mI8RQOeeVIYdN/CoJIG6\npY7E9sau/3+jguzngX+5JleTEkqsafEOHqfee1nz21ot/SvyAh2amxm4l/bTma5A\nc/erEM78Cu6RLOxyz4f3mPpObNghgww57VBS1vzngQKBgQDmflvFWnUpIx68q/Ke\n/ObOZtFZt7bO4WvlJMBVcjIpK/2nzJKhYTZxXxj2fM6fbB3jqtLMOsAAgaKKLkIq\ngcHiTYfx1vCKMA8mik1yax+LzGtHm2wt4N6BErjRmhQejPLg5QeUlqNY9ghkPv8r\n79XsG2DoyxhV3cDy0k4PRy8SBQKBgQC2pv4r30e0Kb6znYVfKyK7vdDS3IavsPKG\nmdRzlcjoMD5KzuL2jQ9utuXAZ2BEuKvioBCvxA8SBAU50EAczDtn/gEpbhSgcc1B\nNVEg+1ydsDKseYyjGJ7lNKU36IMNVpnE5d9qAinZMTTJV27IGFGvb9JM9PrJPslp\nZdANc7v/oQKBgEM6ObQfRSrhdnabRGHA6+TpskgTwHso3ppwFLUXYLAHh61oiqAN\nRZ7dmN9T2cQ/+ZvM2Dz/Kb88EFdzVJMnU5CZAny0L2ZuzAx2rE4iFopk7iltmKjs\n/JjzB/sCkLm0bKbRxls9cJli8WGjyjNbea6q8aIUkp2A12U7l872+TCtAoGAZjjT\nay5M7PGn/tIbwIVdrQCwjDJLVqyLLvWMxxt/EyNc2XUr5JxRlL7bmnDAmfVYjT7T\n1+q8HHMPkamRGAzc+nhXoh4vgRPvsZzrSLAkx0PDOG/WW7j9xH1QMhf4sFBVQrL7\n9FI9pYY6aqx6HZYusSa95b/9Uv/GrSwD4mNxRcECgYEAqKcFptbyeunwnkPDYzBo\neoyv6k8oSa2jpj+QkkpPB2bEgUPZOIARcagu78bkdOFfzQM2KpWiJPtAnVoq1w0o\n9gLo6I/Bf3T9+4vY++cLxnsB7zl9ex39vDL6YN2jo947JiJEEX3/6KMQLD6TYpyk\n85VQ9Qh+QCLtUlzYctUMS24=\n-----END PRIVATE KEY-----\n",
+  "client_email": "sheets@mindful-acre-271815.iam.gserviceaccount.com",
+  "client_id": "102976157817984535701",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/sheets%40mindful-acre-271815.iam.gserviceaccount.com"
+}

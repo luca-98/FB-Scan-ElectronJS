@@ -18,7 +18,10 @@ const countTotal = document.getElementById('count-total');
 const countSuccess = document.getElementById('count-success');
 const countFailed = document.getElementById('count-failed');
 const fs = require('fs');
+const { GoogleSpreadsheet } = require('google-spreadsheet');
+const doc = new GoogleSpreadsheet('1aoPxJeI6K8wcFd8DploqoICNU3LIdtnTUiJ51xMZkMY');
 
+let sheet;
 let total = 0;
 let success = 0;
 let failed = 0;
@@ -62,39 +65,38 @@ start.addEventListener('click', () => {
     clickStartOrStop();
 })
 
-function onInit() {
+async function onInit() {
     changeStatusButton();
     loadResult();
     loadProxy();
+    await doc.useServiceAccountAuth(require('./creds-from-google.json'));
+    await doc.loadInfo(); // loads document properties and worksheets
+    sheet = doc.sheetsByIndex[0];
 }
 onInit();
 
 function loadResult() {
     // if (fs.existsSync('failed.txt')) {
-    //     const data = fs.readFileSync('failed.txt', 'UTF-8');
+    //     const data = fs.readFileSync('failed.txt', 'UTF-8').trim();
     //     const lines = data.split(/\r?\n/);
-    //     failed = lines.length;
     //     if (lines.length > 150) {
+    // failed = lines.length;
     //         lines.splice(0, lines.length - 150);
     //     }
     //     lines.forEach((line) => {
-    //         if (line != '') {
     //             addResult(line, false, false);
-    //         }
     //     });
 
     // }
     if (fs.existsSync('success.txt')) {
-        const data = fs.readFileSync('success.txt', 'UTF-8');
-        const lines = data.split(/\r?\n/);
-        success = lines.length;
+        const data = fs.readFileSync('success.txt', 'UTF-8').trim();
+        const lines = data.split('\n');
         if (lines.length > 150) {
+            success = lines.length;
             lines.splice(0, lines.length - 150);
         }
         lines.forEach((line) => {
-            if (line != '') {
-                addResult(line, true, false);
-            }
+            addResult(line, true, false);
         });
     }
     total = success + failed;
@@ -103,8 +105,8 @@ function loadResult() {
 function loadProxy() {
     if (fs.existsSync('proxy.txt')) {
         listProxy = [];
-        const data = fs.readFileSync('proxy.txt', 'UTF-8');
-        const lines = data.split(/\r?\n/);
+        const data = fs.readFileSync('proxy.txt', 'UTF-8').trim();
+        const lines = data.split('\n');
         lines.forEach((line) => {
             const temp = line.split(':');
             listProxy.push({ host: temp[0], port: temp[1] });
@@ -277,14 +279,27 @@ async function checkmail(email) {
         }
         try {
             const result = await Worker.checkAccount(email, proxy);
-            if (result.info.code !== 'RequestError') {
+            if (proxy && result.info.code !== 'RequestError' && !listProxyOK.includes(proxy.host + ':' + proxy.port)) {
+                if (!fs.existsSync('proxyok.txt')) {
+                    var createStream = fs.createWriteStream("proxyok.txt");
+                    createStream.end();
+                }
+                listProxyOK.push(proxy.host + ':' + proxy.port)
+                fs.appendFile('proxyok.txt', proxy.host + ':' + proxy.port + '\n', function (err, result) {
+                });
+            }
+            if (result.info.code && result.info.code !== 'RequestError') {
                 addResult(email, result.info.success, true);
+                await sheet.addRows(
+                    [{ name: result.info.nameUser ? result.info.nameUser : '', email: email, success: result.info.success, code: result.info.code }]
+                );
             }
             if (status)
                 addScaned(email, result.info, result.info.success);
 
         }
         catch (e) {
+            console.log(e);
         }
     }
 }
@@ -307,12 +322,18 @@ async function check() {
 
 async function run() {
     if (status) {
+        if (listProxyOK.length == 0) {
+            fs.unlink('proxyok.txt', function (err) {
+                if (err) throw err;
+                console.log('File deleted!');
+            });
+        }
         if (indexFakeIp == 1) {
             for (let i = 0; i < 5; i++) {
                 check();
             }
         } else if (indexFakeIp == 2) {
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < 30; i++) {
                 check();
             }
         } else {
