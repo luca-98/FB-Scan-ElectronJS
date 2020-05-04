@@ -193,7 +193,6 @@ li {
   width: calc(100% - 270px);
   height: calc(100% - 60px);
   position: relative;
-  overflow: hidden;
   transition: 0.5s all;
 }
 .right-box .item {
@@ -242,12 +241,10 @@ li {
   align-items: center;
   position: relative;
   margin-bottom: 4px;
-
 }
 .scaned-item ul .col-custom-10 {
   padding-left: 10px;
 }
-
 
 .icon-down {
   margin-top: -3px;
@@ -259,9 +256,10 @@ li {
   -webkit-transform: rotate(45deg);
 }
 
-#fake-ip {
+#fake-ip,
+#thread {
   margin-left: 10px;
-  min-width: 60%;
+  min-width: 250px;
   background-color: rgba(0, 0, 0, 0.3);
   color: white;
   padding: 10px;
@@ -270,7 +268,7 @@ li {
   align-items: center;
   position: relative;
 }
-#fake-ip .drop-down-list {
+.drop-down-list {
   opacity: 0;
   height: 0;
   display: none;
@@ -283,18 +281,19 @@ li {
   z-index: 99999;
   transition: 0.5s all;
 }
-#fake-ip .drop-down-list li {
+.drop-down-list li {
   cursor: pointer;
   padding: 5px 10px;
   margin-bottom: 10px;
 }
-#fake-ip .drop-down-list li:first-child {
+.drop-down-list li:first-child {
   margin-top: 10px;
 }
-#fake-ip .drop-down-list li:hover {
+.drop-down-list li:hover {
   background-color: rgba(255, 255, 255, 0.281);
 }
-#fake-ip:hover .drop-down-list {
+#fake-ip:hover .drop-down-list,
+#thread:hover .drop-down-list {
   height: auto;
   opacity: 1;
   display: block;
@@ -335,4 +334,9 @@ li {
 .disable {
   opacity: 0;
   display: none;
+}
+.processing{
+  position: absolute;
+  bottom: -20px;
+  left: 0;
 }

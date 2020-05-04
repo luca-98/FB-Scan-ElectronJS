@@ -113,7 +113,7 @@ async function postLogin(request, resultGetLoginPage, userAgent, email) {
             let end = resLocation.indexOf('&', start);
             let code = resLocation.slice(start, end);
             if (code == '1348092') {
-                result = { success: true, code: '302 : Found' };
+                result = { success: true, code: '1348092 : Found' };
             } else if (code == '1348131') {
                 let newCookie = '';
                 if (error.response.headers['set-cookie']) {
@@ -326,7 +326,8 @@ const checkAccount = async (email, proxy) => {
     let request = baseRequest;
     if (proxy) {
         request = request.defaults({
-            proxy: 'http://' + proxy.host + ':' + proxy.port
+            proxy: 'http://' + proxy.host + ':' + proxy.port,
+            timeout:3000
         })
     }
     const resultMicrosoft = await microsoft(request, email);
@@ -350,8 +351,7 @@ exports.checkAccount = checkAccount;
 
 
 
-// process.on('uncaughtException', function (err) {
-//     console.log("worker err...");
-// });
+process.on('uncaughtException', function (err) {
+});
 
 

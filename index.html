@@ -22,6 +22,7 @@
         </div>
         <div id="menu-scan" class="row item active">
           Scan Mail
+        
         </div>
         <div id="menu-result" class="row item ">
           Result
@@ -34,13 +35,33 @@
             <span>Default</span>
             <div class="icon-down"></div>
             <ul class="drop-down-list">
-              <li id="selected-default">Default</li>
-              <li id="selected-dcom">Dcom</li>
-              <li id="selected-proxy">Proxy</li>
+              <li data-fakeip="0">Default</li>
+              <li data-fakeip="1">Dcom</li>
+              <li data-fakeip="2" id="selected-proxy">Proxy(0)</li>
+            </ul>
+          </div>
+          <label>Thread</label>
+          <div id="thread">
+            <span>1</span>
+            <div class="icon-down"></div>
+            <ul class="drop-down-list">
+              <li data-thread="1">1</li>
+              <li data-thread="10">10</li>
+              <li data-thread="20">20</li>
+              <li data-thread="30">30</li>
+              <li data-thread="40">40</li>
+              <li data-thread="50">50</li>
+              <li data-thread="60">60</li>
+              <li data-thread="70">70</li>
+              <li data-thread="80">80</li>
+              <li data-thread="100">100</li>
+              <li data-thread="150">150</li>
+              
             </ul>
           </div>
           <button class="start" id="start">Start</button>
         </div>
+       
         <div class="row ">
           <ul class="list-scaned ">
             <li class="header">
@@ -52,11 +73,14 @@
               </ul>
             </li>
             <li class="scaned-item">
-
             </li>
           </ul>
         </div>
+        <div class="processing">
+          0 emails in progress
+        </div>
       </section>
+     
       <section class="right-box disable" id="box-result">
         <div class="row scan-info">
           <div class="item item-style-1 bg-item col-custom-33">
@@ -125,6 +149,7 @@
   <!-- <script src="./render.js"></script> -->
   <script>
     require('./render.js');
+    require('./process.js');
   </script>
 </body>
 
